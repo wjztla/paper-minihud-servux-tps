@@ -38,6 +38,18 @@
 build/libs/
 ```
 
+## 发版
+
+匹配 `v*` 的 Git tag 会自动触发 GitHub Actions 发版构建。
+
+推荐流程：
+
+1. 先把发版 PR 以 **Squash and merge** 合并到 `main`
+2. 在合并后的 `main` 提交上创建并推送类似 `v0.1.0-beta.1` 的 tag
+3. GitHub Actions 会自动构建插件 jar、生成 `.sha256` 校验文件，并把它们附加到 GitHub Release
+
+如果你在 GitHub 网页上创建 tag，目标应当选择合并后的 `main` 提交，而不是合并前的发版分支头提交。
+
 ## 安装方法
 
 1. 运行 `./gradlew build`

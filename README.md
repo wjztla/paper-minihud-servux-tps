@@ -39,6 +39,18 @@ The built plugin jar will be generated under:
 build/libs/
 ```
 
+## Release
+
+Git tags matching `v*` automatically trigger a GitHub Actions release build.
+
+Recommended flow:
+
+1. Merge the release PR into `main` with **Squash and merge**
+2. Create and push a tag such as `v0.1.0-beta.1` on the resulting `main` commit
+3. GitHub Actions will build the plugin jar, generate a `.sha256` checksum, and attach both files to the GitHub Release
+
+If you create a tag from the GitHub UI, the target should be the post-merge commit on `main`, not the pre-merge release branch head.
+
 ## Installation
 
 1. Build the project with `./gradlew build`
