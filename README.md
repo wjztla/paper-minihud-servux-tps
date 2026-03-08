@@ -1,0 +1,115 @@
+# MiniHUDServuxTPS
+
+`MiniHUDServuxTPS` is a Purpur/Paper plugin that implements the minimum `Servux HUD`
+subset needed for MiniHUD to display real server-side `TPS/MSPT` values.
+
+## What It Does
+
+This project currently supports only the `servux:hud_metadata` pieces required for:
+
+- metadata handshake
+- spawn metadata refresh
+- `tps` data logger subscription
+- periodic real `TPS/MSPT` updates
+
+It intentionally does **not** implement the rest of Servux yet, such as:
+
+- mob caps
+- recipe manager sync
+- weather sync
+- entity data
+
+## Target Versions
+
+- Java `21+`
+- Paper/Purpur `1.21.11`
+- MiniHUD `1.21.11`
+
+## Build
+
+```bash
+./gradlew build
+```
+
+The built plugin jar will be generated under:
+
+```text
+build/libs/
+```
+
+## Installation
+
+1. Build the project with `./gradlew build`
+2. Copy the generated plugin jar from `build/libs/` into your server `plugins/` folder
+3. Start or restart the server
+4. Join the server with a client that has MiniHUD installed
+
+## Required Client Setup
+
+MiniHUD must have **HUD Data Sync** enabled.
+
+If `HUD Data Sync` is disabled, MiniHUD can still appear to recognize the channel,
+but it will continue to show **estimated** `TPS/MSPT` values instead of the real
+server-provided values.
+
+This is the single most important client-side requirement.
+
+## Runtime Config
+
+Config file:
+
+```text
+src/main/resources/config.yml
+```
+
+Available options:
+
+- `update-interval-ticks`: how often TPS data is pushed, default `15`
+- `debug-logging`: whether to log protocol details, default `false`
+
+## Troubleshooting
+
+### MiniHUD still shows estimated TPS/MSPT
+
+Check the following first:
+
+1. MiniHUD's **HUD Data Sync** is enabled
+2. The MiniHUD `Server TPS` info line is enabled
+3. The plugin is loaded successfully on the server
+4. No older copy of the plugin jar is still present in `plugins/`
+
+### How to verify the connection
+
+A useful quick test is to enable MiniHUD's `Servux` info line.
+
+If the plugin and client are communicating correctly, MiniHUD should report that it
+is connected to a Servux-compatible HUD source instead of showing a disconnected or
+HUD-sync-disabled state.
+
+## Design Notes
+
+- The plugin speaks on the `servux:hud_metadata` custom payload channel
+- The implementation is deliberately small and protocol-focused, so it is easier to
+  extend later
+- The plugin follows a client-driven request/response flow and avoids proactive
+  handshake workarounds where possible
+- This project currently focuses on a stable `TPS/MSPT` bridge rather than full
+  Servux feature parity
+
+
+## License
+
+This repository currently ships with a `GPL-3.0` license file.
+
+MiniHUD and Servux are separate upstream projects with their own licenses.
+This repository does not bundle their source code; it implements a compatible
+subset of the HUD protocol for interoperability.
+
+If you ever want to relicense this repository, first review whether any borrowed
+template material or copied upstream code remains.
+
+## Current Status
+
+This project is intended to be a small, maintainable, open-source bridge for users
+who run Purpur/Paper servers but want MiniHUD to show real server-side `TPS/MSPT`
+without requiring a Fabric server + Carpet setup.

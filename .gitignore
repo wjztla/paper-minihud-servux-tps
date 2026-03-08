@@ -1,0 +1,21 @@
+.gradle/
+build/
+out/
+.idea/
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+*:Zone.Identifier
+.vscode/
+.settings/
+.classpath
+.project
+*.ipr
+*.iws
+*.log
+logs/
+run/
+.env

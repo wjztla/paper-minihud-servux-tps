@@ -1,0 +1,6 @@
+main: ${PACKAGE}.${NAME}
+name: ${NAME}
+version: "${VERSION}"
+api-version: "1.21"
+author: sunburst
+description: Servux HUD-compatible TPS/MSPT bridge for MiniHUD on Purpur/Paper.

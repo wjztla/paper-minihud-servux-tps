@@ -1,0 +1,92 @@
+plugins {
+    id 'java'
+}
+
+group = 'io.github.sunburst.tpspurpur'
+version = '0.1.8-SNAPSHOT'
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
+    withJavadocJar()
+    withSourcesJar()
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'papermc'
+        url = 'https://repo.papermc.io/repository/maven-public/'
+    }
+}
+
+def workspaceDir = rootDir.parentFile
+def localApiJars = fileTree(dir: workspaceDir, include: ['purpur-api-*.jar', 'paper-api-*.jar'])
+def localServerJars = fileTree(
+    dir: workspaceDir,
+    include: ['purpur-*.jar', 'paper-*.jar'],
+    exclude: ['purpur-api-*.jar', 'paper-api-*.jar']
+)
+def localBundledJars = fileTree(dir: workspaceDir, include: ['adventure-*.jar', 'examination-*.jar', 'option-*.jar', 'ansi-*.jar'])
+def extractedLibsDir = layout.buildDirectory.dir('local-libs').get().asFile
+
+tasks.register('extractBundledCompileLibs', Copy) {
+    onlyIf { !localServerJars.isEmpty() }
+    from {
+        localServerJars.files.collect { zipTree(it) }
+    }
+    include 'META-INF/libraries/net/kyori/**/*.jar'
+    eachFile { details ->
+        details.path = details.name
+    }
+    includeEmptyDirs = false
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    into extractedLibsDir
+}
+
+dependencies {
+    if (!localApiJars.isEmpty()) {
+        compileOnly localApiJars
+    } else {
+        compileOnly 'io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT'
+    }
+
+    compileOnly localBundledJars
+    compileOnly files({ fileTree(dir: extractedLibsDir, include: ['*.jar']).files })
+
+    if (localBundledJars.isEmpty() && localServerJars.isEmpty()) {
+        compileOnly 'net.kyori:adventure-api:4.26.1'
+        compileOnly 'net.kyori:adventure-key:4.26.1'
+        compileOnly 'net.kyori:examination-api:1.3.0'
+        compileOnly 'net.kyori:examination-string:1.3.0'
+        compileOnly 'net.kyori:option:1.1.0'
+        compileOnly 'net.kyori:ansi:1.1.1'
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    dependsOn tasks.named('extractBundledCompileLibs')
+    doFirst {
+        def extractedJars = fileTree(dir: extractedLibsDir, include: ['*.jar'])
+        if (!extractedJars.isEmpty()) {
+            classpath += files(extractedJars)
+        }
+    }
+    options.encoding = 'UTF-8'
+    options.release = 21
+    options.compilerArgs += ['-parameters']
+}
+
+
+test {
+    failOnNoDiscoveredTests = false
+}
+
+processResources {
+    inputs.property('pluginName', rootProject.name)
+    inputs.property('pluginVersion', version)
+    inputs.property('pluginPackage', rootProject.group.toString())
+
+    filesMatching('**/plugin.yml') {
+        expand(NAME: rootProject.name, VERSION: version, PACKAGE: rootProject.group.toString())
+    }
+}
