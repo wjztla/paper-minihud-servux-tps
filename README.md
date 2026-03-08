@@ -27,7 +27,23 @@ It intentionally does **not** implement the rest of Servux yet, such as:
 - Paper/Purpur `1.21.11`
 - MiniHUD `1.21.11`
 
-## Build
+## Download
+
+Most users should **download the prebuilt plugin jar** instead of building from source.
+
+- Latest release: <https://github.com/wjztla/paper-minihud-servux-tps/releases/latest>
+- All releases: <https://github.com/wjztla/paper-minihud-servux-tps/releases>
+
+## Installation
+
+1. Download the plugin jar from the [latest release](https://github.com/wjztla/paper-minihud-servux-tps/releases/latest)
+2. Copy the jar into your server `plugins/` folder
+3. Start or restart the server
+4. Join the server with a client that has MiniHUD installed
+
+## Build from Source
+
+If you want to build the plugin yourself, run:
 
 ```bash
 ./gradlew build
@@ -38,13 +54,6 @@ The built plugin jar will be generated under:
 ```text
 build/libs/
 ```
-
-## Installation
-
-1. Build the project with `./gradlew build`
-2. Copy the generated plugin jar from `build/libs/` into your server `plugins/` folder
-3. Start or restart the server
-4. Join the server with a client that has MiniHUD installed
 
 ## Required Client Setup
 
