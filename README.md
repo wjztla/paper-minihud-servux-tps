@@ -1,5 +1,7 @@
 # MiniHUDServuxTPS
 
+[简体中文](README.zh-CN.md)
+
 `MiniHUDServuxTPS` is a Purpur/Paper plugin that implements the minimum `Servux HUD`
 subset needed for MiniHUD to display real server-side `TPS/MSPT` values.
 
@@ -78,24 +80,6 @@ Check the following first:
 3. The plugin is loaded successfully on the server
 4. No older copy of the plugin jar is still present in `plugins/`
 
-### How to verify the connection
-
-A useful quick test is to enable MiniHUD's `Servux` info line.
-
-If the plugin and client are communicating correctly, MiniHUD should report that it
-is connected to a Servux-compatible HUD source instead of showing a disconnected or
-HUD-sync-disabled state.
-
-## Design Notes
-
-- The plugin speaks on the `servux:hud_metadata` custom payload channel
-- The implementation is deliberately small and protocol-focused, so it is easier to
-  extend later
-- The plugin follows a client-driven request/response flow and avoids proactive
-  handshake workarounds where possible
-- This project currently focuses on a stable `TPS/MSPT` bridge rather than full
-  Servux feature parity
-
 
 ## License
 
@@ -104,9 +88,6 @@ This repository currently ships with a `GPL-3.0` license file.
 MiniHUD and Servux are separate upstream projects with their own licenses.
 This repository does not bundle their source code; it implements a compatible
 subset of the HUD protocol for interoperability.
-
-If you ever want to relicense this repository, first review whether any borrowed
-template material or copied upstream code remains.
 
 ## Current Status
 
