@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'io.github.sunburst.tpspurpur'
-version = '0.1.8-SNAPSHOT'
+version = '0.1.0-beta.1'
 
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(21)
