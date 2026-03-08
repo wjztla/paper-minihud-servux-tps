@@ -26,7 +26,23 @@
 - Paper/Purpur `1.21.11`
 - MiniHUD `1.21.11`
 
-## 构建
+## 下载
+
+大多数用户应该直接下载**已经编译好的插件 jar**，不需要自己构建。
+
+- 最新发布页：<https://github.com/wjztla/paper-minihud-servux-tps/releases/latest>
+- 所有版本：<https://github.com/wjztla/paper-minihud-servux-tps/releases>
+
+## 安装方法
+
+1. 前往[最新发布页](https://github.com/wjztla/paper-minihud-servux-tps/releases/latest)下载插件 jar
+2. 将下载好的 jar 复制到服务端的 `plugins/` 目录
+3. 启动或重启服务器
+4. 使用安装了 MiniHUD 的客户端进入服务器
+
+## 从源码构建
+
+如果你确实需要自己构建，再运行：
 
 ```bash
 ./gradlew build
@@ -37,13 +53,6 @@
 ```text
 build/libs/
 ```
-
-## 安装方法
-
-1. 运行 `./gradlew build`
-2. 将 `build/libs/` 下生成的插件 jar 复制到服务端的 `plugins/` 目录
-3. 启动或重启服务器
-4. 使用安装了 MiniHUD 的客户端进入服务器
 
 ## 客户端必须开启的选项
 
