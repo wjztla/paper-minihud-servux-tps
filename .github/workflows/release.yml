@@ -1,0 +1,86 @@
+name: Release
+
+permissions:
+  contents: write
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing tag to publish or refresh, for example v0.1.0-beta.1
+        required: true
+        type: string
+
+concurrency:
+  group: release-${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build and publish release
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && format('refs/tags/{0}', inputs.tag) || github.ref }}
+
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: 21
+          cache: gradle
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: Build with Gradle
+        run: ./gradlew --no-daemon clean build --console=plain
+
+      - name: Locate release files
+        id: files
+        shell: bash
+        run: |
+          plugin_jar="$(find build/libs -maxdepth 1 -type f -name '*.jar' ! -name '*-sources.jar' ! -name '*-javadoc.jar' | sort | head -n 1)"
+          if [[ -z "$plugin_jar" ]]; then
+            echo "Plugin jar not found under build/libs" >&2
+            exit 1
+          fi
+
+          checksum_file="${plugin_jar}.sha256"
+          sha256sum "$plugin_jar" > "$checksum_file"
+
+          echo "plugin_jar=$plugin_jar" >> "$GITHUB_OUTPUT"
+          echo "checksum_file=$checksum_file" >> "$GITHUB_OUTPUT"
+          echo "plugin_name=$(basename "$plugin_jar")" >> "$GITHUB_OUTPUT"
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          prerelease_flag=()
+          if [[ "${RELEASE_TAG}" == *-* ]]; then
+            prerelease_flag+=(--prerelease)
+          fi
+
+          if gh release view "${RELEASE_TAG}" >/dev/null 2>&1; then
+            gh release upload "${RELEASE_TAG}" \
+              "${{ steps.files.outputs.plugin_jar }}" \
+              "${{ steps.files.outputs.checksum_file }}" \
+              --clobber
+          else
+            gh release create "${RELEASE_TAG}" \
+              "${{ steps.files.outputs.plugin_jar }}" \
+              "${{ steps.files.outputs.checksum_file }}" \
+              --title "MiniHUDServuxTPS ${RELEASE_TAG}" \
+              --generate-notes \
+              --verify-tag \
+              "${prerelease_flag[@]}"
+          fi
