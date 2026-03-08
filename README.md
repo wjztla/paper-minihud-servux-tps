@@ -41,6 +41,16 @@ Most users should **download the prebuilt plugin jar** instead of building from 
 3. Start or restart the server
 4. Join the server with a client that has MiniHUD installed
 
+## Required Client Setup
+
+MiniHUD must have **HUD Data Sync** enabled.
+
+If `HUD Data Sync` is disabled, MiniHUD can still appear to recognize the channel,
+but it will continue to show **estimated** `TPS/MSPT` values instead of the real
+server-provided values.
+
+This is the single most important client-side requirement.
+
 ## Build from Source
 
 If you want to build the plugin yourself, run:
@@ -54,16 +64,6 @@ The built plugin jar will be generated under:
 ```text
 build/libs/
 ```
-
-## Required Client Setup
-
-MiniHUD must have **HUD Data Sync** enabled.
-
-If `HUD Data Sync` is disabled, MiniHUD can still appear to recognize the channel,
-but it will continue to show **estimated** `TPS/MSPT` values instead of the real
-server-provided values.
-
-This is the single most important client-side requirement.
 
 ## Runtime Config
 
